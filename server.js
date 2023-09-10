@@ -33,6 +33,46 @@ app.get('/product/:id', async(req,res)=>{
     }
 })
 
+app.put('/product/:id',async(req,res)=>{
+
+    try {
+        const {id} = req.params;
+        const product = await ProductModel.findByIdAndUpdate(id,req.body)
+        if(!product){
+            return res.status(404).json({
+                message: `Cannot find product with ID ${id}`
+            })
+        }
+        const updateProduct = await ProductModel.findById(id)
+        res.status(200).json(updateProduct)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message:error.message
+        })
+        
+    }
+})
+
+app.delete('/product/:id',async(req,res)=>{
+    try {
+        const {id} = req.params;
+        const product = await ProductModel.findByIdAndDelete(id);
+        if(!product){
+            return res.status(404).json({
+                message:`cannot delete product with id ${id}`
+            })
+        }
+        res.status(200).json(product)
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: error.message
+        })
+    }
+})
+
 app.post('/product', async(req,res)=>{
     try {
         const product = await ProductModel.create(req.body)
