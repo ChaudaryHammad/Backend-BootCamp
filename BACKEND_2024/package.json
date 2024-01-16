@@ -1,0 +1,29 @@
+{
+  "name": "backend_2024",
+  "version": "1.0.0",
+  "description": "Backend bootcamp january 2024 with piyus",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChaudaryHammad/Backend_Bootcamp.git"
+  },
+  "keywords": [
+    "backend",
+    "nodejs",
+    "expressjs"
+  ],
+  "author": "Hammad",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChaudaryHammad/Backend_Bootcamp/issues"
+  },
+  "homepage": "https://github.com/ChaudaryHammad/Backend_Bootcamp#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^3.0.2"
+  }
+}
