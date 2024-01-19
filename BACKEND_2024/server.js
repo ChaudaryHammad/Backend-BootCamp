@@ -140,25 +140,13 @@ app.patch("/api/users/:id", async(req, res) => {
   });
 });
 
-app.delete("/api/users/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const userIndex = users.findIndex((user) => user.id === id);
-
-  if (userIndex !== -1) {
-    users.splice(userIndex, 1);
-    fs.writeFile("./data.json", JSON.stringify(users), (err, data) => {
-      return res.status(200).json({
-        status: "success",
-        data: data,
-        message: "User deleted successfully",
-      });
-    });
-  } else {
-    return res.status(404).json({
-      status: "error",
-      message: "User not found",
-    });
-  }
+app.delete("/api/users/:id", async(req, res) => {
+  const id = req.params.id;
+  const deleted_user = await User.findByIdAndDelete(id);
+  return res.status(200).json({
+    message:"User deleted successfully",
+    data:deleted_user
+  })
 });
 
 // listening to server
