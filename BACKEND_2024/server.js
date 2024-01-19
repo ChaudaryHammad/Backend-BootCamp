@@ -3,7 +3,15 @@ const PORT = 5000;
 const app = express();
 const users = require("./data.json");
 const fs = require("fs");
+const mongoose = require("mongoose");
 app.use(express.urlencoded({ extended: false }));
+
+mongoose.connect("mongodb+srv://backend:admin12345@cluster0.jaut1ye.mongodb.net/").then(()=>{
+  console.log("db connected");
+}).catch((err)=>{
+  console.log(err);
+});
+
 // app.get("/", (req, res) => {
 //   const log = `${Date.now()}: ${req.url} New request Recieved \n`;
 //   const myurl = url.parse(req.url,true);
@@ -23,7 +31,45 @@ app.use(express.urlencoded({ extended: false }));
 //   });
 // });
 
-app.get("/users", (req, res) => {
+const userSchema = new mongoose.Schema(
+  {
+    first_name: {
+      type: String,
+      required: true,
+    },
+    last_name: {
+      type: String,
+      required: false,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    job_title: {
+      type: String,
+      required: true,
+    },
+    gender: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+  
+);
+
+
+const User = mongoose.model("User", userSchema);
+
+app.get("/users", async(req, res) => {
+  const users = await User.find()
   const html = `
   <ul>
   ${users.map((user) => `<li>${user.first_name}</li>`).join("")}
@@ -32,44 +78,79 @@ app.get("/users", (req, res) => {
   res.send(html);
 });
 
-app.get("/api/users", (req, res) => {
+app.get("/api/users", async(req, res) => {
+  const users = await User.find({})
   return res.status(200).json(users);
 });
 
-app.get("/api/users/:id", (req, res) => {
-  const id = Number(req.params.id);
+app.get("/api/users/:id", async(req, res) => {
+  const id = req.params.id;
 
-  const filtered_user = users.find((user) => user.id === id);
-  console.log(filtered_user);
-  res.status(200).json(filtered_user);
+  const user = await User.findById(id)
+ 
+  res.status(200).json(user);
 });
 
-app.post("/api/users", (req, res) => {
+app.post("/api/users", async(req, res) => {
   const body = req.body;
-  users.push({ ...body, id: users.length + 1 });
-  fs.writeFile("./data.json", JSON.stringify(users), (err, data) => {
-    return res.json({
-      status: "success",
-      data: data,
-      id: users.length,
-    });
+  console.log(body);
+ if(!body || !body.first_name || !body.last_name || !body.gender || !body.job_title || !body.email || !body.password){
+  return res.status(400).json({
+    status: "error",
+    message: "Please provide all the required fields",
+  }); 
+
+ }
+
+ const result = await User.create({
+  first_name: body.first_name,
+  last_name: body.last_name,
+  gender: body.gender,
+  job_title: body.job_title,
+  email: body.email,
+  password: body.password,
+
+ });
+
+
+ return res.status(201).json({
+  message:"User created successfully",
+data:result
+ })
+
+});
+
+app.patch("/api/users/:id", async(req, res) => {
+  const id = req.params.id;
+  const updateUser = await User.findByIdAndUpdate(id,{
+    first_name:req.body.first_name,
+    last_name:req.body.last_name,
+    gender:req.body.gender,
+    job_title:req.body.job_title,
+    email:req.body.email,
+    password:req.body.password, 
+  })
+
+  const result = User.create(updateUser)
+
+
+  return res.status(200).json({
+    message:"User updated successfully",
+    data:result
   });
 });
 
-app.patch("/api/users/:id", (req, res) => {
+app.delete("/api/users/:id", (req, res) => {
   const id = Number(req.params.id);
-
-  const updatedData = req.body;
-
   const userIndex = users.findIndex((user) => user.id === id);
 
   if (userIndex !== -1) {
-    users[userIndex] = { ...users[userIndex], ...updatedData };
+    users.splice(userIndex, 1);
     fs.writeFile("./data.json", JSON.stringify(users), (err, data) => {
       return res.status(200).json({
         status: "success",
         data: data,
-        message: "User updated successfully",
+        message: "User deleted successfully",
       });
     });
   } else {
@@ -78,34 +159,7 @@ app.patch("/api/users/:id", (req, res) => {
       message: "User not found",
     });
   }
-
-  return res.status(200).json("");
 });
-
-app.delete("/api/users/:id", (req, res) => {
-
-  const id = Number(req.params.id);
-  const userIndex = users.findIndex((user) => user.id === id);
-
-  if(userIndex!==-1){
-    users.splice(userIndex,1);
-    fs.writeFile("./data.json", JSON.stringify(users), (err, data) => {
-      return res.status(200).json({
-        status: "success",
-        data: data,
-        message: "User deleted successfully",
-      });
-    });
-  }
-  else{
-    return res.status(404).json({
-      status: "error",
-      message: "User not found",
-    });
-  };
-
-})
-
 
 // listening to server
 app.listen(PORT, () => {
