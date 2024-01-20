@@ -1,1 +1,27 @@
-![alt text](./Project1/img.png "Optional title")
+# URL Shortener Project
+
+## Overview
+
+This project is a simple URL Shortener built using Node.js and EJS (Embedded JavaScript) for rendering dynamic views. The purpose of this application is to take long URLs and generate short, easy-to-share links. Users can create shortened URLs and access the original link by navigating to the generated short URL.
+
+## Features
+
+- **Shorten URLs**: Easily create shortened versions of long URLs.
+- **Customizable URLs**: Optionally customize the generated short URL.
+- **Redirects**: Redirect users from the short URL to the original long URL.
+- **Statistics**: Track basic statistics, such as the number of clicks on a short URL.
+
+## Technologies Used
+
+- **Node.js**: A JavaScript runtime for server-side development.
+- **Express.js**: A web application framework for Node.js.
+- **EJS (Embedded JavaScript)**: A templating engine for rendering dynamic content in HTML.
+- **MongoDB**: A NoSQL database for storing URL mappings and statistics.
+- **Shortid**: A library for generating unique, short IDs.
+
+## Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/your-username/url-shortener.git
