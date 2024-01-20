@@ -1,15 +1,14 @@
 const express = require("express");
 const PORT = 5000;
 const app = express();
-const users = require("./data.json");
-const fs = require("fs");
-const mongoose = require("mongoose");
+const {connectMonodb} = require('./connection');
 
 const userRouter = require("./routes/user");
 app.use("/users",userRouter)
+
+// middleware
 app.use(express.urlencoded({ extended: false }));
-
-
+connectMonodb();
 
 
 // listening to server
