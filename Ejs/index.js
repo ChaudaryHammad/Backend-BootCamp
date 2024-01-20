@@ -1,9 +1,17 @@
 const express = require('express')
 const PORT= 5000;
 const app = express();
+const path = require('path')
+app.set('view engine','ejs')
+app.set('views',path.resolve(__dirname,'views'));
 
-app.get('/',(req,res)=>{
-    res.send('Hello World');
+
+app.use(express.json())
+app.get('/test',(req,res)=>{
+  res.render('home',{
+        title:"Home page",
+        name:'hammad'
+  })
 })
 
 
