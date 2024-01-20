@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Page</title>
+    <style>
+      h1 {
+        color: rgb(5, 87, 98);
+      }
+      li {
+        color: rgb(10, 143, 37);
+      }
+      
+      .container {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: left;
+        max-width: 500px;
+        user-select: none;
+
+      }
+
+      .text {
+        font-size: 0.8rem;
+        text-align: left;
+        width: 100%;
+        color: black;
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
+
+      .input {
+        border-radius: 8px;
+        padding: 7px 16px;
+        box-shadow: rgba(77, 79, 82, 0.2) 0px 8px 24px;
+        border: 2px solid rgb(184, 180, 180);
+        font-size: 0.8rem;
+        outline: none;
+        transition: 0.5s ease;
+        width: 250px;
+      }
+
+      .input:hover {
+        box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+        border-color: rgb(138, 175, 255);
+      }
+
+      .input:focus {
+        border: 2px solid rgb(57, 120, 255);
+        box-shadow: rgba(133, 130, 130, 0.1) 0px 4px 12px;
+        transform: scale(0.99);
+      }
+
+      .input::placeholder {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .button {
+        padding: 6px 15px;
+        text-align: center;
+        color: rgb(95, 87, 87);
+        cursor: pointer;
+        background-color: rgb(12, 110, 135);
+        color: white;
+        border-radius: 6px;
+        border: none;
+        transition: 0.5s;
+        width: 20%;
+        margin-top: 7px;
+        font-size: 13px;
+        box-shadow: rgba(104, 100, 100, 0.1) 0px 4px 6px -1px,
+          rgba(49, 42, 42, 0.06) 0px 2px 4px -1px;
+      }
+
+      .button:hover {
+        border-radius: 7px;
+        background-color: rgb(7, 62, 76);
+        border-color: rgb(236, 232, 232);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Url Shortner Nodejs App</h1>
+  
+    <div class="tab">
+      <form class="container" action="/url" method="POST">
+        <input
+          placeholder="https://www.example.com"
+          class="input"
+          name="url"
+          type="text"
+        />
+        <button class="button" type="submit">Generate</button>
+      </form>
+
+      <h2>Generated Id: <% if (locals.id) { %>
+       <p>http://localhost:5000/<%= id %></p>
+      <% } %></h3>
+    </div>
+
+    <div>
+        <% if (locals.urls && locals.urls.length > 0) { %>
+          <table style="max-width: 500px; border-collapse: collapse; margin: 20px; background-color: #f2f2f2; border: 1px solid #dddddd;">
+            <thead>
+              <tr style="background-color: #4CAF50; color: white;">
+                <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">S. No</th>
+                <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">ShortID</th>
+                <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">Redirect</th>
+                <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">Clicks</th>
+                <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% locals.urls.forEach((url, index) => { %>
+                <tr>
+                  <td style="border: 1px solid #dddddd; text-align: left; padding: 8px;"><%= index + 1 %></td>
+                  <td style="border: 1px solid #dddddd; text-align: left; padding: 8px;"><%= url.shortId %></td>
+                  <td style="border: 1px solid #dddddd; text-align: left; padding: 8px;"><%= url.redirectURL %></td>
+                  <td style="border: 1px solid #dddddd; text-align: left; padding: 8px;"><%= url.visitHistory.length %></td>
+                  <td style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+                    <button onclick="openLink('<%= url.redirectURL %>')">Visit</button>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <p>No data available</p>
+        <% } %>
+      
+        <script>
+          function openLink(url) {
+            window.open(url, '_blank');
+          }
+        </script>
+      </div>
+      
+      
+  </body>
+</html>
