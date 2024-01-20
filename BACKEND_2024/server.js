@@ -4,7 +4,7 @@ const app = express();
 const {connectMonodb} = require('./connection');
 
 const userRouter = require("./routes/user");
-app.use("/users",userRouter)
+app.use("/api/users",userRouter)
 
 // middleware
 app.use(express.urlencoded({ extended: false }));
