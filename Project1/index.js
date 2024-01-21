@@ -7,16 +7,21 @@ const staticRoute = require("./routes/staticRouter");
 const { connectToMongo } = require("./connection");
 const Url = require("./models/url");
 const path = require("path");
+const cookieParser = require("cookie-parser");
+const {restrictToLoggenInUserOnly , checkAuth} = require("./middleware/auth")
+
+
+app.use(cookieParser());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/", staticRoute);
+app.use("/", checkAuth, staticRoute);
 
 app.use(express.json());
 connectToMongo();
 
-app.use("/url", urlRoute);
+app.use("/url",restrictToLoggenInUserOnly, urlRoute);
 
 app.use('/user',userRoute)
 
