@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const PORT = 5000;
 const urlRoute = require("./routes/url");
+const userRoute = require("./routes/user");
 const staticRoute = require("./routes/staticRouter");
 const { connectToMongo } = require("./connection");
 const Url = require("./models/url");
@@ -10,16 +11,14 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: false }));
 
-
-
-
 app.use("/", staticRoute);
-
 
 app.use(express.json());
 connectToMongo();
 
 app.use("/url", urlRoute);
+
+app.use('/user',userRoute)
 
 app.get("/:shortId", async (req, res) => {
   const shortId = req.params.shortId;
@@ -35,10 +34,8 @@ app.get("/:shortId", async (req, res) => {
     }
   );
 
-  res.redirect(entry.redirectURL);
+  // res.redirect(entry.redirectURL);
 });
-
-
 
 app.listen(PORT, (err) => {
   if (err) {
