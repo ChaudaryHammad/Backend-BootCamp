@@ -3,10 +3,9 @@ const app = express();
 const PORT = 3000;
 const path = require('path');
 const multer = require('multer');
-
+require('dotenv').config()
 //middlewares
-app.set('view engine', 'ejs');
-app.set("views", __dirname + "/views");
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -30,8 +29,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/upload', upload.single('profileImage'), (req,res)=>{
-    console.log(req.file);
-    console.log(req.body);
+  
 
    return res.redirect('/');
 
