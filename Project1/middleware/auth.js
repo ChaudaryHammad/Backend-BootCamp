@@ -1,35 +1,32 @@
-const { get } = require("mongoose")
-const {getUser} = require("../service/auth")
+const { get } = require("mongoose");
+const { getUser } = require("../service/auth");
 
-
-async function restrictToLoggenInUserOnly(req,res,next){
-    const userUid = req.headers['authorization']
-    if(!userUid){
-        return res.redirect("/login")
-    }
-
-    const token = userUid.split("Bearer ")[1]
-
-    const user = getUser(token)
-    if(!user){
-        return res.redirect("/login")
-    }
-    req.user = user;
-    
-    next()
-
-}
-
-
-async function checkAuth(req,res,next){
-    const userUid = req.headers['authorization']
+function checkForAuthentication(req, res, next) {
+  const tokenCookie = req.cookies?.token;
  
+    if (!tokenCookie) {
+        return next();
+    }
 
-    const token = userUid.split("Bearer ")[1]
-   const user = getUser(token)
-    req.user = user;
-    
-    next()
+  const token = tokenCookie;
+  const usser = getUser(token);
+
+  req.user = usser;
+  next();
 }
 
-module.exports = {restrictToLoggenInUserOnly,checkAuth}
+function restrictTo(roles=[]){
+    return function(req,res,next){
+        if(!req.user){
+           return res.redirect("/login")
+        }
+
+        if(!roles.includes(req.user.role)){
+            return res.end('You are not allowed to access this route')
+        }
+
+        return next()
+    }
+}
+
+module.exports = { checkForAuthentication,restrictTo };

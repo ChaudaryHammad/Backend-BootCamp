@@ -8,20 +8,22 @@ const { connectToMongo } = require("./connection");
 const Url = require("./models/url");
 const path = require("path");
 const cookieParser = require("cookie-parser");
-const {restrictToLoggenInUserOnly , checkAuth} = require("./middleware/auth")
-
+const {checkForAuthentication,restrictTo} = require("./middleware/auth")
 
 app.use(cookieParser());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/", checkAuth, staticRoute);
 
 app.use(express.json());
 connectToMongo();
 
-app.use("/url",restrictToLoggenInUserOnly, urlRoute);
+
+app.use(checkForAuthentication)
+app.use("/",  staticRoute);
+
+app.use("/url",restrictTo(['NORMAL',['ADMIN']]), urlRoute);
 
 app.use('/user',userRoute)
 
