@@ -1,8 +1,8 @@
 function App() {
-  
-  return (
+   return (
     <>
-     <h1> Socket Io</h1>
+     <h1 style={{textAlign:'center',fontSize:'3rem'}}>Redux</h1>
+
     </>
   )
 }
